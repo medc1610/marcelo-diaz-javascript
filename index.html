@@ -8,6 +8,25 @@
   <title>Document</title>
 </head>
 <body>
+  <label for="alumnos">Ingresa cantidad de alumnos:</label>
+  <input type="number" id="alumnos">
+  <button onclick="generarTabla()">Generar Tabla</button>
+
+  <div id="tabla-container"></div>
+
+  <button onclick="verificarNotas()">Verificar</button>
+
+  <div id="aprobados-container">
+      <h2 id="aprobadosTitulo"></h2>
+      <table id="aprobados"></table>
+  </div>
+
+  <div id="reprobados-container">
+    <h2 id="reprobadosTitulo"></h2>
+      <table id="reprobados"></table>
+  </div>
+
+
 <script src="javascript.js"></script>
 </body>
 </html>
