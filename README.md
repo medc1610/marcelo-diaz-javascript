@@ -1,2 +1,0 @@
-# primeraEntregaJavascript
-# terceraEntregaJavascript
