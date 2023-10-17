@@ -1,0 +1,21 @@
+.card{
+    margin: 10px;
+}
+
+.card-body{
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+}
+
+.tabla-alumnos{
+    display: grid;
+
+}
+
+.notas-totales{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+

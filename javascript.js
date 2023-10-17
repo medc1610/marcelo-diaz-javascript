@@ -1,13 +1,27 @@
+asignaturas();
+document.getElementById('generar-tabla').addEventListener('click', generarTabla);
+document.getElementById('verificar-notas').addEventListener('click', verificarNotas);
+
 
 function generarTabla() {
+    if (!localStorage.getItem('asignatura')) {
+        alert('Debe seleccionar una asignatura');
+        return;
+    }
+    const botonGenerar = document.getElementById('generar-tabla');
+    botonGenerar.addEventListener('click', function() {
+        console.log('Se hizo click en el botón Generar');
+    });
     const numAlumnos = parseInt(document.getElementById('alumnos').value);
     const tablaContainer = document.getElementById('tabla-container');
-    let tablaHTML = '<table>';
-    tablaHTML += '<tr><th>Nombre</th><th>Nota</th></tr>';
+    let tablaHTML = '<table class="table-primary">';
+    
+    
+    tablaHTML += '<tr class="table-primary"><th>Nombre</th><th>Nota</th></tr>';
     for (let i = 0; i < numAlumnos; i++) {
-        tablaHTML += `<tr>
-                        <td><input type="text" class="nombre" placeholder="Nombre"></td>
-                        <td><input type="number" class="nota" min="1" max="7" placeholder="Nota"></td>
+        tablaHTML += `<tr class="table-primary">
+                        <td><input type="text" class="nombre form-control" placeholder="Nombre"></td>
+                        <td><input type="number" class="nota form-control" min="1" max="7" placeholder="Nota"></td>
                       </tr>`;
     }
     tablaHTML += '</table>';
@@ -15,6 +29,11 @@ function generarTabla() {
 }
 
 function verificarNotas() {
+    if (!localStorage.getItem('asignatura')){
+        alert('Debe seleccionar una asignatura');
+        return;
+    }
+   
     const aprobados = [];
     const reprobados = [];
     const alumnosRows = document.querySelectorAll('#tabla-container .nombre');
@@ -46,21 +65,25 @@ function verificarNotas() {
 
     mostrarAprobados();
     mostrarReprobados();
+    localStorage.removeItem('aprobados');
+    localStorage.removeItem('reprobados');
+    localStorage.removeItem('asignatura');
 }
 
 function mostrarAprobados() {
     const tituloAprobados = document.getElementById('aprobadosTitulo');  
     const aprobadosContainer = document.getElementById('aprobados');
     const aprobadosData = JSON.parse(localStorage.getItem('aprobados')) || [];
-    let aprobadosHTML = 'Alumnos Aprobados';
+    const asignaturaSeleccionada = localStorage.getItem('asignatura');
+    let aprobadosHTML = `Alumnos Aprobados en ${asignaturaSeleccionada}`;
     if (aprobadosData.length === 0) {                
         aprobadosHTML += '<h6>No hay alumnos aprobados</h6>';
         tituloAprobados.innerHTML = aprobadosHTML;
     } else {   
         tituloAprobados.innerHTML = aprobadosHTML;     
-        let tablaHTML = '<tr><th>Nombre</th><th>Nota</th></tr>';
+        let tablaHTML = '<tr ><th>Nombre</th><th>Nota</th></tr>';
         aprobadosData.forEach(alumno => {
-            tablaHTML += `<tr><td>${alumno.nombre}</td><td>${alumno.nota}</td></tr>`;
+            tablaHTML += `<tr ><td>${alumno.nombre}</td><td >${alumno.nota}</td></tr>`;
         });   
         aprobadosContainer.innerHTML = tablaHTML;
     }
@@ -71,7 +94,8 @@ function mostrarReprobados() {
     const tituloReprobados = document.getElementById('reprobadosTitulo');    
     const reprobadosContainer = document.getElementById('reprobados');
     const reprobadosData = JSON.parse(localStorage.getItem('reprobados')) || [];
-    let reprobadosHTML = 'Alumnos Reprobados';
+    const asignaturaSeleccionada = localStorage.getItem('asignatura');
+    let reprobadosHTML = `Alumnos Reprobados en ${asignaturaSeleccionada}`;
     if (reprobadosData.length === 0) {        
         reprobadosHTML += '<h6>No hay alumnos reprobados</h6>';
         tituloReprobados.innerHTML = reprobadosHTML;
@@ -84,4 +108,23 @@ function mostrarReprobados() {
         reprobadosContainer.innerHTML = tablaHTML;
     }
    
+}
+
+function asignaturas() {
+    fetch('asignaturas.json')
+    .then(res => res.json())
+    .then(data => {
+        const asignaturasContainer = document.getElementById('asignaturas');
+        let asignaturasHTML = '<option value="">Seleccione una asignatura</option>';
+        data.forEach(asignatura => {
+            asignaturasHTML += `<option value="${asignatura.name}">${asignatura.name}</option>`;
+        });
+        asignaturasContainer.innerHTML = asignaturasHTML;
+        asignaturasContainer.addEventListener('change', function() {
+            const asignaturaSeleccionada = this.value;
+            localStorage.setItem('asignatura', asignaturaSeleccionada);
+            console.log(`Se seleccionó la asignatura con ID ${asignaturaSeleccionada}`);
+        });
+    })
+    .catch(err => console.log(err));
 }
